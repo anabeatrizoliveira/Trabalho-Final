@@ -2,21 +2,11 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
-
 //A nota final eu estava considerando a soma de todas as notas, contudo, no item 9 do menu que estava pedindo para ser criado
-//pediu para considerar a aprovaÁ„o a partir da mÈdia das trÍs notas, sendo necess·rio ser maior ou igual a 6.0 para ser aprovado
-//ent„o considerei a nota final como a mÈdia.
+//pediu para considerar a aprova√ß√£o a partir da m√©dia das tr√™s notas, sendo necess√°rio ser maior ou igual a 6.0 para ser aprovado
+//ent√£o considerei a nota final como a m√©dia.
 
-//N„o fiz o protÛtipo da funÁ„o e coloquei ela no final do cÛdigo porque deu errado por algum motivo e raz„o que ainda n„o sei explicar e assim deu certo
-//ent„o fiquei no simples.
-
-//A busca sequencial foi realizada a partir da matrÌcula dos alunos conseguindo por ela achar todos os dados.
-
-float media (float n1, float n2, float n3){
-    float resultado;
-    resultado=(n1+n2+n3)/3;
-    return (resultado);
-    }
+//A busca sequencial foi realizada a partir da matr√≠cula dos alunos conseguindo por ela achar todos os dados.
 
 typedef struct {
     int matricula;
@@ -27,126 +17,189 @@ typedef struct {
     float media;
 } cadastroaluno;
 
-int busca(int n, cadastroaluno v[]){
-	int i;
-	for(i=0; i<1; i++){
-		if(n==v[i]){
-			return (i);
+float media (float n1, float n2, float n3){
+    float resultado;
+    resultado=(n1+n2+n3)/3;
+    return (resultado);
+    }
+
+int buscamatricula(int matricula, cadastroaluno aluno[], int tamanhoarray){
+	for(int i=0; i<tamanhoarray; i++){
+		if(matricula==aluno[i].matricula){
+			return i;
 		}
 	}
-	return(-1);
+	
+	return -1;
+}
+
+void bubblesort(cadastroaluno alunos[], int tamanhoarray){
+	for(int i=0; i<tamanhoarray; i++){
+		for(int j=0; j<tamanhoarray; j++){
+			if(alunos[i].matricula<alunos[j].matricula){
+				cadastroaluno aux = alunos[i];
+				alunos[i]=alunos[j];
+				alunos[j]=aux;
+			}
+		}
+	}
 }
 
 int main()
 {
-setlocale(LC_ALL, "Portuguese");
-cadastroaluno alunos[5];
-int i=0;
-for(i=0; i<1; i++){
-    printf("Digite o n˙mero de matrÌcula: ");
-    scanf("%i", &alunos[i].matricula);
-    setbuf(stdin, NULL);
-    printf("Digite o nome do aluno: ");
-    fgets(alunos[i].nome, 15, stdin);
-    setbuf(stdin, NULL);
-    printf("Digite qual o valor tirado na primeira nota: ");
-    scanf( "%f" , &alunos[i].nota01);
-    printf( "Digite qual o valor tirado na segunda nota: ");
-    scanf( "%f" , &alunos[i].nota02);
-    printf("Digite qual o valor tirado na terceira nota: ");
-    scanf( "%f" , &alunos[i].nota03);
-    alunos[i].media=media(alunos[i].nota01, alunos[i].nota02, alunos[i].nota03);
-    printf("A mÈdia È igual a %.2f . \n", alunos[i].media);
-}
-
-int opcao=1;
-while(opcao!=0){
-printf("Digite o cÛdigo que faÁa a aÁ„o que deseja executar:\n1- Imprimir todos os Elementos do Arranjo. \n2- Imprimir apenas os nomes dos alunos. \n3- Imprimir os nomes dos alunos e suas respectivas notas finais. \n4- Buscar os dados de um aluno usando a busca sequencial. \n5- Imprimir os alunos ordenados de acordo com sua matrÌcula. \n6- Editar as notas de um aluno, para isso È necess·rio que se busque os dados do aluno. \n7- Imprimir a matrÌcula, o nome, e a nota final do aluno que obteve a maior nota de todas. \n8- Imprimir a matrÌcula, nome e nota final do aluno que obteve a menor nota de todas. \n9-Imprimir quantos alunos foram reprovados, imprima ainda a mÈdia geral. Os alunos aprovados ser„o aqueles que obtiverem mÈdia maior ou igual a 6.0. \n0- Sair do programa\n");
-scanf("%i", &opcao);
-
-if(opcao==0){
-    exit(0);
-    return(0);
-}
-
-if(opcao==1){
-        for(i=0; i<1; i++){
-        printf("MatrÌcula: %i. Nome: %s. Nota01: %.2f. Nota02: %.2f. Nota03: %.2f. MÈdia: %.2f. \n\n", alunos[i].matricula, alunos[i].nome, alunos[i].nota01, alunos[i].nota02, alunos[i].nota03, alunos[i].media);
-    }
-}
-
-if(opcao==2){
-        for(i=0; i<1; i++){
-        printf("Nome: %s.\n\n", alunos[i].nome);
-    }
-}
-
-if(opcao==3){
-        for(i=0; i<1; i++){
-        printf("Nome: %s. Nota final: %.2f. \n\n", alunos[i].nome, alunos[i].media);
-    }
-}
-
-if(opcao==4){
-	int matricula, valor;
-	i=0;
-	printf("%i", valor);
-	printf("Digite a matrÌcula do aluno que deseja acessar os dados: ");
-	scanf("%i", &matricula);
-	valor=busca(matricula, alunos[i].matricula);
-	printf("%i", valor);
-}
-
-if(opcao==5){
+	setlocale(LC_ALL, "Portuguese");
+	int opcao=1;
+	FILE *arq;
+	int quantidadealuno=0;
+	cadastroaluno *alunos = (cadastroaluno*) malloc (1* sizeof(cadastroaluno));
+	arq = fopen ("alunos.txt", "rt");
+		
+	while (!feof(arq)){
+		
+		if(quantidadealuno!=0){
+		
+		alunos = (cadastroaluno*) realloc (alunos, (sizeof(alunos)+1)*sizeof(cadastroaluno));
+	}
+		fscanf(arq, "%d %s %f %f %f", &alunos[quantidadealuno].matricula, &alunos[quantidadealuno].nome, &alunos[quantidadealuno].nota01, &alunos[quantidadealuno].nota02, &alunos[quantidadealuno].nota03);
+		alunos[quantidadealuno].media=media(alunos[quantidadealuno].nota01, alunos[quantidadealuno].nota02, alunos[quantidadealuno].nota03);
+		
+		printf("%d %s %.2f %.2f %.2f %.2f \n", alunos[quantidadealuno].matricula, alunos[quantidadealuno].nome, alunos[quantidadealuno].nota01, alunos[quantidadealuno].nota02, alunos[quantidadealuno].nota03, alunos[quantidadealuno].media);
+		quantidadealuno++;	
+	}
 	
-}
-
-if(opcao==6){
 	
-}
-
-if(opcao==7){
-	float maior=0;
-	int marcador;
-	for(i=0; i<1; i++){
-        if(alunos[i].media>maior){
-        	maior=alunos[i].media;
-        	marcador=i;
+	while(opcao!=0){
+		
+	
+	
+	
+	printf("\n\nDigite o c√≥digo que fa√ßa a a√ß√£o que deseja executar:\n1- Imprimir todos os Elementos do Arranjo. \n2- Imprimir apenas os nomes dos alunos. \n3- Imprimir os nomes dos alunos e suas respectivas notas finais. \n4- Buscar os dados de um aluno usando a busca sequencial. \n5- Imprimir os alunos ordenados de acordo com sua matr√≠cula. \n6- Editar as notas de um aluno, para isso √© necess√°rio que se busque os dados do aluno. \n7- Imprimir a matr√≠cula, o nome, e a nota final do aluno que obteve a maior nota de todas. \n8- Imprimir a matr√≠cula, nome e nota final do aluno que obteve a menor nota de todas. \n9-Imprimir quantos alunos foram reprovados, imprima ainda a m√©dia geral. Os alunos aprovados ser√£o aqueles que obtiverem m√©dia maior ou igual a 6.0. \n0- Sair do programa\n");
+	scanf("%i", &opcao);
+	
+		if(opcao==0){
+	    exit(0);
+	    return(0);
 		}
-    }
-    printf("MatrÌcula: %i. Nome: %s. MÈdia: %.2f foi o aluno que obteve a maior nota. \n\n", alunos[marcador].matricula, alunos[marcador].nome, alunos[marcador].media);
-}
-
-if(opcao==8){
-	float menor=alunos[0].media;
-	int marcador;
-	for(i=0; i<1; i++){
-		if(alunos[i].media<menor){
-        	menor=alunos[i].media;
-        	marcador=i;
+		
+		else if(opcao==1){
+        	for(int j=0; j<quantidadealuno; j++){
+        	printf("Matr√≠cula: %i. Nome: %s. Nota01: %.2f. Nota02: %.2f. Nota03: %.2f. M√©dia: %.2f. \n\n", alunos[j].matricula, alunos[j].nome, alunos[j].nota01, alunos[j].nota02, alunos[j].nota03, alunos[j].media);
+    		}
 		}
-    }
-    printf("MatrÌcula: %i. Nome: %s. MÈdia: %.2f foi o aluno que obteve a menor nota. \n\n", alunos[marcador].matricula, alunos[marcador].nome, alunos[marcador].media);
-}
-
-if(opcao==9){
-	int contaprovado=0, contreprovado=0;
-	float mediageral=0;
-	for(i=0; i<1; i++){
-		if(alunos[i].media>=6.0){
+	
+		else if(opcao==2){
+	        for(int j=0; j<quantidadealuno; j++){
+	        printf("Nome: %s.\n\n", alunos[j].nome);
+	    	}
+		}
+	
+		else if(opcao==3){
+	        for(int j=0; j<quantidadealuno; j++){
+	        printf("Nome: %s. Nota final: %.2f. \n\n", alunos[j].nome, alunos[j].media);
+	   	 	}
+		}	
+		
+		else if(opcao==4){
+		
+			int matricula, valor;
+			
+			printf("Digite a matr√≠cula do aluno que deseja acessar os dados: ");
+			scanf("%i", &matricula);
+			valor=buscamatricula(matricula, alunos, quantidadealuno);
+				if(valor==-1){
+					printf("Digite um n√∫mero de matr√≠cula v√°lido.");
+				}
+				else{
+					printf("Matr√≠cula: %i. Nome: %s. Nota01: %.2f. Nota02: %.2f. Nota03: %.2f. M√©dia: %.2f. \n\n", alunos[valor].matricula, alunos[valor].nome, alunos[valor].nota01, alunos[valor].nota02, alunos[valor].nota03, alunos[valor].media);
+				}
+		}
+		
+		else if(opcao==5){
+		bubblesort(alunos, quantidadealuno);
+			for(int i=0; i<quantidadealuno; i++){
+			printf("%d %s %.2f %.2f %.2f %.2f %d \n", alunos[i].matricula, alunos[i].nome, alunos[i].nota01, alunos[i].nota02, alunos[i].nota03, alunos[i].media);
+			}
+	}
+	
+		else if(opcao==6){
+			int matricula, valor, dado;
+			
+			printf("Digite a matr√≠cula do aluno que deseja editar os dados: ");
+			scanf("%i", &matricula);
+			valor=buscamatricula(matricula, alunos, quantidadealuno);
+				if(valor==-1){
+					printf("Digite um n√∫mero de matr√≠cula v√°lido.");
+				}
+				else{
+					printf("Digite o c√≥dio que corresponde ao dado que voc√™ deseja editar:\n1- N√∫mero de matr√≠cula.\n2- Nome do aluno.\n3- Nota 1.\n4- Nota 2.\n5- Nota 3.\n\n");
+					scanf("%i", &dado);
+						if(dado==1){
+							printf("Digite o novo valor: ");
+							scanf("%i", &alunos[valor].matricula);
+						}
+						
+						else if(dado==2){
+							printf("Digite o novo valor: ");
+							setbuf(stdin, NULL);
+							fgets (alunos[valor].nome, 15, stdin);
+						}
+						
+						else if(dado==3){
+							printf("Digite o novo valor: ");
+							scanf("%f", &alunos[valor].nota01);
+						}	
+						else if(dado==4){
+							printf("Digite o novo valor: ");
+							scanf("%f", &alunos[valor].nota02);
+						}	
+						else if(dado==5){
+							printf("Digite o novo valor: ");
+							scanf("%f", &alunos[valor].nota03);
+						}		
+				}
+		}
+			
+		else if(opcao==7){
+		float maior=0;
+		int marcador;
+			for(int j=0; j<quantidadealuno; j++){
+        		if(alunos[j].media>maior){
+	        	maior=alunos[j].media;
+	        	marcador=j;
+			}	
+   		 }
+    	printf("Matr√≠cula: %i. Nome: %s. M√©dia: %.2f foi o aluno que obteve a maior nota. \n\n", alunos[marcador].matricula, alunos[marcador].nome, alunos[marcador].media);
+	}
+	
+		else if(opcao==8){
+		float menor=alunos[0].media;
+		int marcador;
+			for(int j=0; j<quantidadealuno; j++){
+			if(alunos[j].media<menor){
+        		menor=alunos[j].media;
+        		marcador=j;
+			}
+	    }
+    printf("Matr√≠cula: %i. Nome: %s. M√©dia: %.2f foi o aluno que obteve a menor nota. \n\n", alunos[marcador].matricula, alunos[marcador].nome, alunos[marcador].media);
+	}
+		
+		if(opcao==9){
+		int contaprovado=0, contreprovado=0;
+		float mediageral=0;
+			for(int j=0; j<quantidadealuno; j++){
+			if(alunos[j].media>=6.0){
 			contaprovado++;
-		}
-		else if(alunos[i].media<6.0){
+			}
+			else if(alunos[j].media<6.0){
 			contreprovado++;
-		}
-		mediageral=mediageral+alunos[i].media;
-		}
-	mediageral=mediageral/1;
-	printf("Foram aprovador %i alunos.\nForam reprovados %i alunos. \nA mÈdia geral de todas as notas È: %.2f.\n\n", contaprovado, contreprovado, mediageral);	
-    }
-}
-return 0;
-
-}
-
-
+			}
+			mediageral=mediageral+alunos[j].media;
+			}
+			mediageral=mediageral/quantidadealuno;
+			printf("Foram aprovador %i alunos.\nForam reprovados %i alunos. \nA m√©dia geral de todas as notas √©: %.2f.\n\n", contaprovado, contreprovado, mediageral);	
+    		}
+	
+	}
+ 	free(alunos);
+	return 0;
+	}
