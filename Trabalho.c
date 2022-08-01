@@ -67,7 +67,9 @@ int main()
 	FILE *arq;
     int contador = 0;
     int quantidadealuno = (qtdaluno(arq)+1);
+    //Função qtdaluno retornando quantas linhas tem no programa, porém ela retorna uma linha a menos porque na última não tem o \n;
 	cadastroaluno *alunos = (cadastroaluno*) malloc (quantidadealuno* sizeof(cadastroaluno));
+	//Locação dinâmica de memória;
 	arq = fopen ("alunos.txt", "rt");
 
   
@@ -87,6 +89,7 @@ int main()
 	}
 	
     fclose(arq);
+    //Arquivo sendo fechado após o uso;
 
 
 	int opcao=1;
@@ -99,7 +102,7 @@ int main()
 		FILE *arqnovo = fopen ("alunosorganizados.txt", "wt");
 		bubblesort(alunos, quantidadealuno);
 			for(int j=0; j<quantidadealuno; j++){
-            fprintf(arqnovo, "%d %s %.2f %.2f %.2f %.2f %d \n", alunos[j].matricula, alunos[j].nome, alunos[j].nota01, alunos[j].nota02, alunos[j].nota03, alunos[j].media);
+            fprintf(arqnovo, "%d %s %.2f %.2f %.2f %.2f \n", alunos[j].matricula, alunos[j].nome, alunos[j].nota01, alunos[j].nota02, alunos[j].nota03, alunos[j].media);
 			}
 	    exit(0);
 	    return(0);
